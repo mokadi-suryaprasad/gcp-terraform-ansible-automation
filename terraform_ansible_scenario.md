@@ -75,6 +75,8 @@ ansible-playbook install-nginx.yml
 
 ---
 
+
+
 ## 🎯 Summary
 
 | Tool | Responsibility |
@@ -86,3 +88,34 @@ ansible-playbook install-nginx.yml
 
 ---
 
+## 🔹 Terraform — Infrastructure Provisioning
+
+- Used to create cloud resources like **VMs, VPCs, Load Balancers, Databases**, etc.
+- Defines infrastructure as code using **HCL (.tf files)**
+- Integrates perfectly with **Git** for version control
+- Ensures **consistent** environments across **Dev, Stage, and Prod**
+
+> 💡 **Think of Terraform as the “blueprint”** that lays the **foundation** of your system.
+
+
+## 🔹 Ansible — Configuration & Automation
+
+- Used **after** the infrastructure is provisioned
+- Installs **packages**, configures **software**, and deploys **applications**
+- Uses **Playbooks (YAML)** to define server configuration steps
+- Example: Install NGINX, copy configuration, deploy app, start services
+
+> 💡 **Think of Ansible as the “interior designer”** that makes your system **ready to use**.
+
+
+## ⚙️ Both Are IaC Tools, But Solve Different Layers
+
+| Layer                          | Tool       | Purpose                                          |
+|-------------------------------|-----------|--------------------------------------------------|
+| **Infrastructure Provisioning** | Terraform | Creates servers, networks, storage, etc.         |
+| **Configuration & Automation**  | Ansible   | Installs & configures software on the servers    |
+
+
+## ✅ One-Line Summary
+
+> **Terraform builds the house. Ansible makes it a home.** 🏗️🏡
