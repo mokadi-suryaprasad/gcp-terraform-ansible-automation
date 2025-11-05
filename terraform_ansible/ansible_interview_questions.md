@@ -59,8 +59,73 @@ Even if we **run the playbook many times**, the server state **remains correct**
 ---
 
 ## 7) What are Roles in Ansible?
-Roles help **organize playbooks** into folders.  
-They make the configuration **clean and reusable**.
+
+# 📂 Ansible Roles 
+
+## What is a Role in Ansible?
+A **Role** in Ansible is a way to **organize playbooks** into separate folders.  
+Roles help you keep your automation **clean, reusable, and easy to manage**.
+
+Instead of writing everything inside one playbook, Roles split configuration into parts.
+
+---
+
+## Why Use Roles?
+
+| Benefit | Description |
+|--------|-------------|
+| Clean Structure | Files are organized properly |
+| Reusable | The same role can be used in many projects |
+| Easy to Maintain | Updates are done in one place |
+| Best Practice | Used in real company DevOps projects |
+
+---
+
+## Structure of a Role
+
+A typical Role looks like this:
+
+```
+roles/
+  nginx/
+    tasks/
+      main.yml
+    vars/
+      main.yml
+    files/
+      index.html
+    templates/
+      site.conf.j2
+    handlers/
+      main.yml
+```
+
+### Purpose of Each Folder
+| Folder | Purpose |
+|--------|---------|
+| `tasks/` | Contains the main tasks to run |
+| `vars/` | Variables used in the role |
+| `files/` | Files to copy to remote servers |
+| `templates/` | Jinja2 templates for configuration files |
+| `handlers/` | Restart/Reload services when needed |
+
+---
+
+## Example Usage in Playbook
+
+```yaml
+- hosts: webservers
+  roles:
+    - nginx
+```
+
+This tells Ansible to **run the nginx role** on all servers in the `webservers` group.
+
+---
+
+## One-Line Interview Answer
+**Roles in Ansible are used to organize playbooks into structured folders, making configuration clean, reusable, and easy to manage.**
+
 
 ---
 
