@@ -73,3 +73,12 @@ ansible-playbook -i inventory.ini webserver.yml
 ## 🎯 One-Line Summary
 
 > **Ansible is a tool used to automate server setup and configuration, ensuring consistency and speed across multiple systems.**
+
+🔹 **Is Ansible Push or Pull Based?**
+
+Ansible is **Push-Based** by default — the control node pushes configurations to the target servers over SSH.
+
+> It also supports **Pull-Based mode** using `ansible-pull`, but this is used less often.
+
+**One-Line Interview Answer:**  
+**Ansible is primarily a Push-based configuration management tool.**
