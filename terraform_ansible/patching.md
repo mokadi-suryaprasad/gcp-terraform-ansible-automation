@@ -1,5 +1,5 @@
 
-# 🩹 Server Patching in GCP (Very Easy Explanation)
+# 🩹 Server Patching in GCP
 
 ## What is Patching?
 Patching means **updating your servers** to fix:
