@@ -41,6 +41,68 @@ Example:
 
 ---
 
+## What are Facts in Ansible?
+**Facts** are **system information** that Ansible collects automatically from managed servers before running any tasks.
+
+These details help playbooks make **smart decisions** based on the system.
+
+---
+
+## Examples of Information (Facts) Collected
+- Hostname
+- Operating System type
+- IP Address
+- CPU, RAM, Disk details
+- Network interfaces
+- Kernel version
+- Timezone
+
+---
+
+## How Ansible Collects Facts
+Ansible collects facts using the **`setup` module**.
+
+### View Facts of a Server
+```bash
+ansible all -m setup
+```
+
+This will display **all details** available about the server.
+
+---
+
+## Why Use Facts?
+
+| Benefit | Explanation |
+|--------|-------------|
+| Dynamic Playbooks | Playbooks adapt to different servers automatically |
+| Conditional Tasks | Run tasks only if system matches condition |
+| Better Automation | No need to hard-code server info |
+
+---
+
+## Example: Using a Fact in a Playbook
+
+```yaml
+- name: Print OS type
+  hosts: all
+  tasks:
+    - name: Show OS
+      debug:
+        msg: "This server is running {{ ansible_os_family }}"
+```
+
+Output Example:
+```
+This server is running Debian
+```
+
+---
+
+## One-Line Interview Answer
+**Facts in Ansible are automatically collected system details from servers, used to make playbooks dynamic and smart.**
+
+
 ## 5) What are Ansible Modules?
 Modules are **pre-built commands** that Ansible uses to perform actions.
 
@@ -144,6 +206,78 @@ No agent required.
 - Use **ansible-lint** to check for mistakes
 
 ---
+
+## 🛡️What is Ansible Vault?
+
+## What is Ansible Vault?
+**Ansible Vault** is a feature in Ansible that is used to **secure and encrypt sensitive data**, such as:
+- Passwords
+- API Keys
+- Database credentials
+- Cloud service account keys
+
+This keeps secrets **safe** even if your files are stored in GitHub or shared with others.
+
+---
+
+## Why Do We Use Ansible Vault?
+
+| Reason | Explanation |
+|-------|-------------|
+| Security | Prevents others from reading sensitive information |
+| Safe Version Control | Encrypted data can be pushed to Git safely |
+| Compliance | Helps follow security and audit policies |
+
+---
+
+## Basic Commands
+
+| Action | Command |
+|-------|---------|
+| Create a new encrypted file | `ansible-vault create secrets.yml` |
+| Encrypt an existing file | `ansible-vault encrypt secrets.yml` |
+| View encrypted file | `ansible-vault view secrets.yml` |
+| Edit encrypted file | `ansible-vault edit secrets.yml` |
+| Decrypt a file | `ansible-vault decrypt secrets.yml` |
+
+---
+
+## Example: Storing a Password
+
+### Step 1 — Create and encrypt a secrets file
+```bash
+ansible-vault create secrets.yml
+```
+
+### Step 2 — Add a variable inside the file
+```yaml
+db_password: MyStrongPassword123
+```
+
+### Step 3 — Use the variable in Playbook
+```yaml
+- name: Example using vault variable
+  hosts: dbserver
+  vars_files:
+    - secrets.yml
+  tasks:
+    - name: Show password
+      debug:
+        msg: "Database password is {{ db_password }}"
+```
+
+### Step 4 — Run the playbook with vault password
+```bash
+ansible-playbook play.yml --ask-vault-pass
+```
+
+---
+
+
+
+## One-Line Interview Answer
+**Ansible Vault is used to encrypt and protect sensitive information such as passwords and keys inside Ansible automation files.**
+
 
 ## 10) Difference Between Ansible, Puppet, and Chef?
 
