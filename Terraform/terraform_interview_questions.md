@@ -8,6 +8,8 @@ When writing Terraform code for Google Cloud (GCP), we commonly use the followin
 ---
 
 ### 0) Terraform Settings Block
+
+``` hcl
 terraform {
   required_version = ">= 1.8"
   required_providers {
@@ -17,7 +19,7 @@ terraform {
     }
   }
 }
-
+```
 ### 1) **provider** Block
 This block tells Terraform which cloud provider to use and how to connect to it.
 
