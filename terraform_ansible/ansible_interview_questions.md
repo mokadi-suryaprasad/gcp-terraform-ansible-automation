@@ -11,6 +11,9 @@ Example: installing software or configuring settings on many servers at once.
 Ansible is **Push-Based**.  
 The control machine **pushes** changes to other servers using **SSH**.
 
+## One-Line Interview Answer
+**Ansible is a simple, agentless, and push-based automation tool that configures and manages multiple servers using YAML playbooks.**
+
 ---
 
 ## 3) What is a Playbook?
@@ -290,5 +293,125 @@ ansible-playbook play.yml --ask-vault-pass
 
 ---
 
+## 11) How to Call a Playbook Inside Another Playbook in Ansible
+
+
+## import_playbook in Ansible
+
+## What is `import_playbook`?
+`import_playbook` is used to **call one playbook from another playbook**.  
+It helps in **organizing** Ansible automation by splitting tasks into multiple playbook files.
+
+---
+
+## ✅ Why Use `import_playbook`?
+- Keeps playbooks **clean and readable**
+- Allows **reuse** of playbooks
+- Makes **large automations easier to manage**
+
+---
+
+## 📝 Example
+
+### main.yml
+```yaml
+- import_playbook: setup.yml
+- import_playbook: deploy.yml
+```
+
+### setup.yml
+```yaml
+- name: Setup Web Server
+  hosts: webservers
+  tasks:
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+```
+
+### deploy.yml
+```yaml
+- name: Deploy Application
+  hosts: webservers
+  tasks:
+    - name: Copy application files
+      copy:
+        src: app/
+        dest: /var/www/html/
+```
+
+---
+
+## ▶️ Run the main playbook
+```bash
+ansible-playbook main.yml
+```
+
+---
+
 ## ⭐ One-Line Interview Answer
-**Ansible is a simple, agentless, and push-based automation tool that configures and manages multiple servers using YAML playbooks.**
+**`import_playbook` is used to include one playbook inside another to keep automation clean and well-organized.**
+
+## 12) Static vs Dynamic Inventory in Ansible
+
+## What is Inventory in Ansible?
+Inventory is the **list of servers** that Ansible will manage.
+
+---
+
+## 🔹 Static Inventory
+Static Inventory is a **fixed list** of servers stored in a file.  
+You update it **manually**.
+
+### Example (inventory.ini):
+```
+[webservers]
+10.10.1.11
+10.10.1.12
+
+[dbservers]
+10.10.2.5
+```
+
+### Run:
+```
+ansible -i inventory.ini webservers -m ping
+```
+
+### When to Use:
+- Small environments
+- When servers do not change frequently
+
+---
+
+## 🔹 Dynamic Inventory
+Dynamic Inventory is **generated automatically**.  
+It pulls server details from **cloud providers** (AWS, GCP, Azure), APIs, or scripts.
+
+### Example (GCP dynamic inventory):
+```
+ansible-inventory -i gcp_compute.yaml --list
+```
+
+### Why Use Dynamic Inventory?
+- Servers are created/deleted automatically (auto-scaling)
+- No need to manually update inventory
+
+---
+
+## 🆚 Key Differences
+
+| Feature | Static Inventory | Dynamic Inventory |
+|--------|-----------------|------------------|
+| Server List | Manual | Automatic |
+| Best For | Small setups | Cloud / Auto-scaling |
+| Maintenance | Manual editing | No manual updates |
+| Format | .ini / .yaml | API / Script / Plugin output |
+
+---
+
+## ⭐ One-Line Interview Answer
+Static inventory is **manually maintained**, while dynamic inventory **automatically retrieves server details**
+from cloud platforms or external sources.
+
