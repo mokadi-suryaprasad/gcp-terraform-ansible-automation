@@ -1,0 +1,101 @@
+name: Terraform via Vault (GCP)
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Choose plan or apply'
+        type: choice
+        required: true
+        options: [plan, apply]
+        default: plan
+  push:
+    branches: [ "main" ]
+    paths:
+      - "terraform/**"
+      - ".github/workflows/terraform_vault_gcp.yml"
+
+permissions:
+  id-token: write   # Required for GitHub OIDC
+  contents: read
+
+env:
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "false"
+  VAULT_ADDR: ${{ secrets.VAULT_ADDR }}           # e.g., https://vault.example.com
+  VAULT_ROLE: ${{ vars.VAULT_JWT_ROLE || 'gh-terraform' }}  # Vault JWT auth role name
+  TF_VAR_project_id: ${{ vars.GCP_PROJECT_ID }}
+  TF_VAR_region: ${{ vars.GCP_REGION || 'us-central1' }}
+
+concurrency:
+  group: terraform-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.5
+
+      - name: Install tooling (jq, curl)
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y jq curl
+
+      - name: Get GitHub OIDC token for Vault (audience=vault)
+        id: oidc
+        run: |
+          if [ -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" ]; then
+            echo "This runner does not support OIDC"; exit 1
+          fi
+          AUDIENCE=${{ vars.VAULT_JWT_AUDIENCE || 'vault' }}
+          TOKEN_JSON=$(curl -sSf -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=${AUDIENCE}")
+          OIDC_TOKEN=$(echo "$TOKEN_JSON" | jq -r '.value')
+          if [ -z "$OIDC_TOKEN" ] || [ "$OIDC_TOKEN" = "null" ]; then
+            echo "Failed to obtain OIDC token"; echo "$TOKEN_JSON"; exit 1
+          fi
+          echo "token=$OIDC_TOKEN" >> $GITHUB_OUTPUT
+
+      - name: Login to Vault using JWT (GitHub OIDC)
+        id: vault_login
+        run: |
+          LOGIN_RESP=$(curl -sSf \
+            --header "Content-Type: application/json" \
+            --request POST \
+            --data "{\"role\":\"${VAULT_ROLE}\",\"jwt\":\"${{ steps.oidc.outputs.token }}\"}" \
+            "$VAULT_ADDR/v1/auth/jwt/login")
+          echo "$LOGIN_RESP" | jq . >/tmp/vault_login.json
+          CLIENT_TOKEN=$(jq -r '.auth.client_token' /tmp/vault_login.json)
+          if [ -z "$CLIENT_TOKEN" ] || [ "$CLIENT_TOKEN" = "null" ]; then
+            echo "Vault login failed:"
+            cat /tmp/vault_login.json
+            exit 1
+          fi
+          # Export token for subsequent steps and Terraform vault provider
+          echo "VAULT_TOKEN=$CLIENT_TOKEN" >> $GITHUB_ENV
+
+      - name: Terraform Init
+        run: terraform init -input=false
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan (dynamic token example)
+        if: inputs.action == 'plan' || github.event_name == 'push'
+        run: |
+          # Choose which main file to run by enabling that file and commenting others.
+          # Example here: dynamic OAuth token flow (main_dynamic_access_token.tf)
+          terraform plan -no-color
+
+      - name: Terraform Apply (manual)
+        if: inputs.action == 'apply'
+        run: terraform apply -auto-approve
