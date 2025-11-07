@@ -1,4 +1,4 @@
-# terraform_gcp_vault_setup.md
+
 Real-time, **step-by-step** setup to integrate **Terraform ⇄ HashiCorp Vault ⇄ GCP**.  
 Copy this file into your repo and follow it top to bottom.
 
