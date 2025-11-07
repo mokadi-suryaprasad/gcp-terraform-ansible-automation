@@ -7,19 +7,36 @@ When writing Terraform code for Google Cloud (GCP), we commonly use the followin
 
 ---
 
-### 0) Terraform Settings Block
+#### 0) Terraform Settings Block
 
-``` hcl
+```hcl
 terraform {
   required_version = ">= 1.8"
   required_providers {
     google = {
-      source = "hashicorp/google"
+      source  = "hashicorp/google"
       version = ">= 5.32.0"
     }
   }
 }
 ```
+Explanation:
+
+The terraform block configures Terraform itself, not cloud resources.
+
+required_version ensures Terraform CLI must be version 1.8 or above.
+
+required_providers tells Terraform which provider to use.
+
+Here we are using the Google Cloud provider.
+
+source defines where the provider plugin is downloaded from.
+
+version ensures that the provider version is 5.32.0 or newer.
+
+In Simple Terms:
+This block is used to control Terraform behavior and ensure consistent provider and Terraform versions across all environments.
+
 ### 1) **provider** Block
 This block tells Terraform which cloud provider to use and how to connect to it.
 
