@@ -1267,6 +1267,36 @@ module "b" {
   ]
 }
 ```
+# Terraform Apply Errors When Disk Size Is Changed Manually (Very Easy English)
+
+This file explains **what errors may happen** when someone manually changes a disk from **10GB → 20GB** in GCP and you later run `terraform apply`.
+
+---
+
+## ✅ Scenario
+- You created infrastructure using Terraform.
+- Someone manually increased the disk size from **10GB to 20GB** in Google Cloud.
+- Your Terraform config still says:
+```hcl
+size = 10
+```
+```hcl
+terraform apply
+```
+
+❗ What Errors Can Happen
+
+1️⃣ Terraform tries to SHRINK disk back to 10GB (This will fail)
+
+Why?
+
+Terraform thinks the disk should be 10GB because your .tf file says 10GB.
+
+Cloud providers do not allow shrinking disks.
+
+Error you will see:
+Error: Disk size cannot be reduced
+Error 400: Cannot shrink disk
 
 ---
 
