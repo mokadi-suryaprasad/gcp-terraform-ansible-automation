@@ -8,6 +8,14 @@ Configuration Management means **making sure all servers have the correct softwa
 
 Instead of logging into each server manually, **Ansible** applies the same configuration to many servers at once using **Playbooks (YAML files)**.
 
+| Section           | Explanation                                  |
+| ----------------- | -------------------------------------------- |
+| **Setup**         | Prepare control node, SSH keys, Python.      |
+| **Installation**  | Install Ansible using apt/dnf/pip.           |
+| **Settings**      | Configure inventory, ansible.cfg, groups.    |
+| **Configuration** | Use playbooks and modules to manage servers. |
+
+
 ---
 
 ## 🟢 Why We Use Ansible for Configuration Management
