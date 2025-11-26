@@ -206,6 +206,6 @@ ansible-playbook test.yml
 
 ---
 
-## 🎉 Setup Complete
+## Setup Complete
 
 Your Ansible environment is fully ready!
