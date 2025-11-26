@@ -1,4 +1,4 @@
-## ⭐ Ansible Setup – Easy Steps
+## Ansible Setup – Easy Steps
 
 Ansible has two types of machines:
 
